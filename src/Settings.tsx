@@ -7,13 +7,16 @@ import {
   useKeyboardType,
   useLowerKeyShift,
   useLowerOctave,
+  useLowerSmartChord,
   useUpperKeyShift,
   useUpperOctave,
+  useUpperSmartChord,
 } from './dataflow';
 import { GoSettings } from 'react-icons/go';
 import { RangeSlider } from './RangeSlider';
 import { Select } from './Select';
 import * as styles from './Settings.css';
+import { Switch } from './Switch';
 
 export const Settings: FC = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -32,8 +35,10 @@ export const Settings: FC = () => {
   const [keyboardType, setKeyboardType] = useKeyboardType();
   const [upperOctave, setUpperOctave] = useUpperOctave();
   const [upperKeyShift, setUpperKeyShift] = useUpperKeyShift();
+  const [upperSmartChord, setUpperSmartChord] = useUpperSmartChord();
   const [lowerOctave, setLowerOctave] = useLowerOctave();
   const [lowerKeyShift, setLowerKeyShift] = useLowerKeyShift();
+  const [lowerSmartChord, setLowerSmartChord] = useLowerSmartChord();
 
   return (
     <>
@@ -62,6 +67,7 @@ export const Settings: FC = () => {
               ))}
             </Select>
           </div>
+
           <label className={styles.label} htmlFor="key">
             キー
           </label>
@@ -70,7 +76,11 @@ export const Settings: FC = () => {
               id="key"
               value={key ?? 'none'}
               onChange={(e) => {
-                setKey((e.target.value as (typeof notes)[number]) || null);
+                setKey(e.target.value || null);
+                if (!e.target.value) {
+                  setUpperSmartChord(false);
+                  setLowerSmartChord(false);
+                }
               }}
             >
               <option value="">-</option>
@@ -81,6 +91,8 @@ export const Settings: FC = () => {
               ))}
             </Select>
           </div>
+
+          <hr className={styles.divider} />
 
           <label className={styles.label} htmlFor="upperOctave">
             上段オクターブ: <span className={styles.value}>{upperOctave}</span>
@@ -111,6 +123,23 @@ export const Settings: FC = () => {
             />
           </div>
 
+          <label className={styles.label} htmlFor="upperSmartChord">
+            上段スマートコード
+            <span className={styles.value}>{upperSmartChord}</span>
+          </label>
+          <div className={styles.field}>
+            <div className={styles.fieldInline}>
+              <Switch
+                checked={upperSmartChord}
+                onChange={() => setUpperSmartChord((s) => !s)}
+                disabled={!key}
+              />
+              {upperSmartChord ? 'ON' : 'OFF'}
+            </div>
+          </div>
+
+          <hr className={styles.divider} />
+
           <label className={styles.label} htmlFor="lowerOctave">
             下段オクターブ: <span className={styles.value}>{lowerOctave}</span>
           </label>
@@ -124,6 +153,7 @@ export const Settings: FC = () => {
               onChange={(e) => setLowerOctave(e.target.valueAsNumber)}
             />
           </div>
+
           <label className={styles.label} htmlFor="lowerKeyShift">
             下段キーシフト:{' '}
             <span className={styles.value}>{lowerKeyShift}</span>
@@ -138,6 +168,28 @@ export const Settings: FC = () => {
               onChange={(e) => setLowerKeyShift(e.target.valueAsNumber)}
             />
           </div>
+
+          <label className={styles.label} htmlFor="lowerSmartChord">
+            下段スマートコード
+            <span className={styles.value}>{lowerSmartChord}</span>
+          </label>
+          <div className={styles.field}>
+            <div className={styles.fieldInline}>
+              <Switch
+                checked={lowerSmartChord}
+                onChange={() => setLowerSmartChord((s) => !s)}
+                disabled={!key}
+              />
+              {lowerSmartChord ? 'ON' : 'OFF'}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.caption}>
+          <p>※ 上段二行、下段二行ごとに異なる設定を適用可能</p>
+          <p>
+            ※ スマートコード: 設定したキーに基づくダイアトニックコードを生成
+          </p>
         </div>
 
         <button

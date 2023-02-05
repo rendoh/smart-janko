@@ -17,6 +17,8 @@ const escapes: Record<string, string> = {
   '"': 'dq',
   '^': 'ca',
   '@': 'at',
+  '¥': 'yn',
+  _: 'us',
 };
 
 function gridArea(key: string) {

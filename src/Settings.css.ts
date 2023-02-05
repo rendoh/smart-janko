@@ -60,3 +60,21 @@ export const closeButton = style({
     background: '#111',
   },
 });
+
+export const fieldInline = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: 10,
+});
+
+export const divider = style({
+  gridColumn: '1 / -1',
+  background: '#e1e1e1',
+  height: 1,
+  margin: 5,
+});
+
+export const caption = style({
+  marginTop: 16,
+  fontSize: 12,
+});

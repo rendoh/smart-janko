@@ -18,11 +18,11 @@ export const Key: FC<KeyProps> = ({ keyboardKey }) => {
 
   const down = useCallback(() => {
     setIsPressed(true);
-    synth.triggerAttack(note);
+    synth.triggerAttack(typeof note === 'string' ? note : note.notes);
   }, [note]);
   const up = useCallback(() => {
     setIsPressed(false);
-    synth.triggerRelease(note);
+    synth.triggerRelease(typeof note === 'string' ? note : note.notes);
   }, [note]);
 
   useEffect(() => {
@@ -45,11 +45,13 @@ export const Key: FC<KeyProps> = ({ keyboardKey }) => {
     return () => {
       window.removeEventListener('keydown', handleKeydown);
       window.removeEventListener('keyup', handleKeyup);
-      synth.triggerRelease(note);
+      synth.triggerRelease(typeof note === 'string' ? note : note.notes);
     };
   }, [down, keyboardKey, note, up]);
 
-  const isInScale = useIsInScale(note);
+  const isInScale = useIsInScale(
+    typeof note === 'string' ? note : note.notes[0],
+  );
 
   const canUseMouse = useMediaQuery('(hover: hover) and (pointer: fine)');
 
@@ -63,7 +65,16 @@ export const Key: FC<KeyProps> = ({ keyboardKey }) => {
       onTouchEnd={canUseMouse ? undefined : up}
     >
       <span className={styles.keyChar}>{keyboardKey}</span>
-      <span className={styles.keyNote}>{note}</span>
+      <span className={styles.keyNote}>
+        {typeof note === 'string' ? (
+          note
+        ) : (
+          <>
+            {note.chord}
+            <span className={styles.keyNoteSmall}>({note.notes[0]})</span>
+          </>
+        )}
+      </span>
     </div>
   );
 };

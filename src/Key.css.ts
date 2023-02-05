@@ -48,4 +48,12 @@ export const keyNote = style({
   position: 'relative',
   top: '-1.1em',
   opacity: 0.8,
+  textAlign: 'center',
+});
+
+export const keyNoteSmall = style({
+  display: 'block',
+  fontSize: '75%',
+  marginTop: '0.3em',
+  marginBottom: '-0.8em',
 });
