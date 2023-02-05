@@ -86,8 +86,8 @@ export const Settings: FC = () => {
           <input
             id="upperKeyShift"
             type="range"
-            min={-7}
-            max={7}
+            min={-11}
+            max={11}
             value={upperKeyShift}
             step={1}
             onChange={(e) => setUpperKeyShift(e.target.valueAsNumber)}
@@ -110,8 +110,8 @@ export const Settings: FC = () => {
           <input
             id="lowerKeyShift"
             type="range"
-            min={-7}
-            max={7}
+            min={-11}
+            max={11}
             value={lowerKeyShift}
             step={1}
             onChange={(e) => setLowerKeyShift(e.target.valueAsNumber)}
