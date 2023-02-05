@@ -16,9 +16,10 @@ export const openButton = style({
 export const dialog = style({
   width: 400,
   maxWidth: '80%',
-  maxHeight: '90%',
+  maxHeight: '80%',
   border: 'none',
   borderRadius: 5,
+  background: '#fff',
   '::backdrop': {
     backgroundColor: 'rgba(0, 0, 0, .3)',
   },
