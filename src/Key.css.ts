@@ -9,6 +9,7 @@ export const key = recipe({
     background: 'white',
     display: 'grid',
     placeItems: 'center',
+    color: '#444',
   },
   variants: {
     pressed: {
@@ -17,17 +18,23 @@ export const key = recipe({
         boxShadow: 'none',
       },
     },
+    outOfScale: {
+      true: {
+        background: '#333',
+        color: 'white',
+      },
+    },
   },
 });
 
 export const keyChar = style({
   fontSize: '4vw',
   gridArea: '1 / -1',
-  color: '#e8e8e8',
   fontWeight: 'bold',
   lineHeight: 1,
   display: 'block',
   textTransform: 'uppercase',
+  opacity: 0.1,
 });
 
 export const keyNote = style({
@@ -35,6 +42,8 @@ export const keyNote = style({
   lineHeight: 1,
   display: 'block',
   fontWeight: 'bold',
-  color: '#444',
   fontSize: '1.2vw',
+  position: 'relative',
+  top: '0.6em',
+  opacity: 0.8,
 });

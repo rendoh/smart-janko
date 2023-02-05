@@ -2,6 +2,8 @@ import { FC, useEffect, useRef } from 'react';
 import {
   KeyboardType,
   keyboardTypes,
+  notes,
+  useKey,
   useKeyboardType,
   useLowerKeyShift,
   useLowerOctave,
@@ -22,6 +24,7 @@ export const Settings: FC = () => {
     };
   }, []);
 
+  const [key, setKey] = useKey();
   const [keyboardType, setKeyboardType] = useKeyboardType();
   const [upperOctave, setUpperOctave] = useUpperOctave();
   const [upperKeyShift, setUpperKeyShift] = useUpperKeyShift();
@@ -45,6 +48,23 @@ export const Settings: FC = () => {
             {keyboardTypes.map((type) => (
               <option key={type} value={type}>
                 {type}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="key">キー</label>
+          <select
+            id="key"
+            value={key ?? 'none'}
+            onChange={(e) => {
+              setKey((e.target.value as (typeof notes)[number]) || null);
+            }}
+          >
+            <option value="">-</option>
+            {notes.map((note) => (
+              <option key={note} value={note}>
+                {note}
               </option>
             ))}
           </select>

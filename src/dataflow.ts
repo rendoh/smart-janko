@@ -9,7 +9,7 @@ import {
 export const keyboardTypes = ['US', 'JIS'] as const;
 export type KeyboardType = (typeof keyboardTypes)[number];
 const keyboardTypeState = atom<KeyboardType>({
-  key: 'keyType',
+  key: 'keyboardType',
   default: 'US',
 });
 
@@ -59,14 +59,14 @@ const lowerKeyShiftState = atom<number>({
 });
 
 function findKeyRowAndIndex(
-  key: string,
+  keyboardKey: string,
   layout: KeyboardLayout,
 ): {
   y: number;
   x: number;
 } {
   for (let i = 0; i < layout.length; i++) {
-    const index = layout[i].indexOf(key);
+    const index = layout[i].indexOf(keyboardKey);
     if (index === -1) {
       continue;
     }
@@ -87,7 +87,20 @@ function wrap(min: number, max: number, value: number) {
   return ((range + ((value - min) % range)) % range) + min;
 }
 
-const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+export const notes = [
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
+] as const;
 
 function generateNote(
   offsetFromC: number,
@@ -103,13 +116,13 @@ function generateNote(
   return `${note}${octave}`;
 }
 
-const keyNoteState = selectorFamily<string, string>({
-  key: 'keyNote',
+const keyboardNoteState = selectorFamily<string, string>({
+  key: 'keyboardNote',
   get:
-    (key) =>
+    (keyboardKey) =>
     ({ get }) => {
       const layout = get(keyboardLayoutState);
-      const { y, x } = findKeyRowAndIndex(key, layout);
+      const { y, x } = findKeyRowAndIndex(keyboardKey, layout);
       const isUpperKey = y < 2;
       const octave = get(isUpperKey ? upperOctaveState : lowerOctaveState);
       const keyShift = get(
@@ -119,6 +132,51 @@ const keyNoteState = selectorFamily<string, string>({
     },
 });
 
+const keyState = atom<(typeof notes)[number] | null>({
+  key: 'key',
+  default: 'C',
+});
+
+const scaleState = selector<string[] | null>({
+  key: 'scale',
+  get: ({ get }) => {
+    const key = get(keyState);
+    if (!key) {
+      return null;
+    }
+
+    const rootIndex = notes.indexOf(key);
+    const rotated = [...notes.slice(rootIndex), ...notes.slice(0, rootIndex)];
+    return [
+      rotated[0],
+      rotated[2],
+      rotated[4],
+      rotated[5],
+      rotated[7],
+      rotated[9],
+      rotated[11],
+    ];
+  },
+});
+
+const noteInScaleState = selectorFamily<boolean, string>({
+  key: 'noteInScale',
+  get:
+    (note) =>
+    ({ get }) => {
+      const scale = get(scaleState);
+      return scale ? scale.includes(note.replace(/\d/, '')) : true;
+    },
+});
+
+export function useKey() {
+  return useRecoilState(keyState);
+}
+
+export function useIsInScale(note: string) {
+  return useRecoilValue(noteInScaleState(note));
+}
+
 export function useKeyboardType() {
   return useRecoilState(keyboardTypeState);
 }
@@ -127,8 +185,8 @@ export function useKeyboardLayout() {
   return useRecoilValue(keyboardLayoutState);
 }
 
-export function useKeyNote(key: string) {
-  return useRecoilValue(keyNoteState(key));
+export function useKeyboardNote(keyboardKey: string) {
+  return useRecoilValue(keyboardNoteState(keyboardKey));
 }
 
 export function useUpperOctave() {

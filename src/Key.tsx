@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { useKeyNote } from './dataflow';
+import { useIsInScale, useKeyboardNote } from './dataflow';
 import * as styles from './Key.css';
 import { useMediaQuery } from './useMediaQuery';
 
@@ -12,7 +12,7 @@ export type KeyProps = {
 
 export const Key: FC<KeyProps> = ({ keyboardKey }) => {
   const [isPressed, setIsPressed] = useState(false);
-  const note = useKeyNote(keyboardKey);
+  const note = useKeyboardNote(keyboardKey);
   const pressed = useRef(false);
   pressed.current = isPressed;
 
@@ -49,11 +49,13 @@ export const Key: FC<KeyProps> = ({ keyboardKey }) => {
     };
   }, [down, keyboardKey, note, up]);
 
+  const isInScale = useIsInScale(note);
+
   const canUseMouse = useMediaQuery('(hover: hover) and (pointer: fine)');
 
   return (
     <div
-      className={styles.key({ pressed: isPressed })}
+      className={styles.key({ pressed: isPressed, outOfScale: !isInScale })}
       onMouseDown={canUseMouse ? down : undefined}
       onMouseUp={canUseMouse ? up : undefined}
       onMouseLeave={canUseMouse && isPressed ? up : undefined}
