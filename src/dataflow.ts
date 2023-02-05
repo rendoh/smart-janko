@@ -10,7 +10,7 @@ export const keyboardTypes = ['US', 'JIS'] as const;
 export type KeyboardType = (typeof keyboardTypes)[number];
 const keyboardTypeState = atom<KeyboardType>({
   key: 'keyboardType',
-  default: 'US',
+  default: 'JIS',
 });
 
 type KeyboardLayout = readonly string[][];

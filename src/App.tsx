@@ -5,7 +5,12 @@ import { Settings } from './Settings';
 
 export const App: FC = () => (
   <div className={styles.app}>
-    <Settings />
-    <Keyboard />
+    <div className={styles.content}>
+      <header className={styles.header}>
+        <h1 className={styles.heading}>Smart Janko Keyboard</h1>
+        <Settings />
+      </header>
+      <Keyboard />
+    </div>
   </div>
 );

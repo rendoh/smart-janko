@@ -6,4 +6,8 @@ export const keyboard = style({
   padding: 10,
   background: '#e1e1e1',
   width: '100%',
+  WebkitUserSelect: 'none',
+  userSelect: 'none',
+  WebkitTouchCallout: 'none',
+  WebkitTapHighlightColor: 'rgba(255, 255, 255, 0)',
 });

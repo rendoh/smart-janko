@@ -10,6 +10,10 @@ import {
   useUpperKeyShift,
   useUpperOctave,
 } from './dataflow';
+import { GoSettings } from 'react-icons/go';
+import { RangeSlider } from './RangeSlider';
+import { Select } from './Select';
+import * as styles from './Settings.css';
 
 export const Settings: FC = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -32,92 +36,117 @@ export const Settings: FC = () => {
   const [lowerKeyShift, setLowerKeyShift] = useLowerKeyShift();
 
   return (
-    <div>
-      <button onClick={() => dialogRef.current?.showModal()}>
-        Open Settings Modal
+    <>
+      <button
+        className={styles.openButton}
+        onClick={() => dialogRef.current?.showModal()}
+        aria-label="設定"
+      >
+        <GoSettings />
       </button>
-      <dialog ref={dialogRef}>
-        <p>Settings</p>
-        <div>
-          <label htmlFor="keyboardType">キーボードタイプ</label>
-          <select
-            id="keyboardType"
-            value={keyboardType}
-            onChange={(e) => setKeyboardType(e.target.value as KeyboardType)}
-          >
-            {keyboardTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+      <dialog ref={dialogRef} className={styles.dialog}>
+        <div className={styles.fields}>
+          <label className={styles.label} htmlFor="keyboardType">
+            キーボードタイプ
+          </label>
+          <div className={styles.field}>
+            <Select
+              id="keyboardType"
+              value={keyboardType}
+              onChange={(e) => setKeyboardType(e.target.value as KeyboardType)}
+            >
+              {keyboardTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <label className={styles.label} htmlFor="key">
+            キー
+          </label>
+          <div className={styles.field}>
+            <Select
+              id="key"
+              value={key ?? 'none'}
+              onChange={(e) => {
+                setKey((e.target.value as (typeof notes)[number]) || null);
+              }}
+            >
+              <option value="">-</option>
+              {notes.map((note) => (
+                <option key={note} value={note}>
+                  {note}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          <label className={styles.label} htmlFor="upperOctave">
+            上段オクターブ: <span className={styles.value}>{upperOctave}</span>
+          </label>
+          <div className={styles.field}>
+            <RangeSlider
+              id="upperOctave"
+              min={1}
+              max={8}
+              value={upperOctave}
+              step={1}
+              onChange={(e) => setUpperOctave(e.target.valueAsNumber)}
+            />
+          </div>
+
+          <label className={styles.label} htmlFor="upperKeyShift">
+            上段キーシフト:{' '}
+            <span className={styles.value}>{upperKeyShift}</span>
+          </label>
+          <div className={styles.field}>
+            <RangeSlider
+              id="upperKeyShift"
+              min={-11}
+              max={11}
+              value={upperKeyShift}
+              step={1}
+              onChange={(e) => setUpperKeyShift(e.target.valueAsNumber)}
+            />
+          </div>
+
+          <label className={styles.label} htmlFor="lowerOctave">
+            下段オクターブ: <span className={styles.value}>{lowerOctave}</span>
+          </label>
+          <div className={styles.field}>
+            <RangeSlider
+              id="lowerOctave"
+              min={1}
+              max={8}
+              value={lowerOctave}
+              step={1}
+              onChange={(e) => setLowerOctave(e.target.valueAsNumber)}
+            />
+          </div>
+          <label className={styles.label} htmlFor="lowerKeyShift">
+            下段キーシフト:{' '}
+            <span className={styles.value}>{lowerKeyShift}</span>
+          </label>
+          <div className={styles.field}>
+            <RangeSlider
+              id="lowerKeyShift"
+              min={-11}
+              max={11}
+              value={lowerKeyShift}
+              step={1}
+              onChange={(e) => setLowerKeyShift(e.target.valueAsNumber)}
+            />
+          </div>
         </div>
-        <div>
-          <label htmlFor="key">キー</label>
-          <select
-            id="key"
-            value={key ?? 'none'}
-            onChange={(e) => {
-              setKey((e.target.value as (typeof notes)[number]) || null);
-            }}
-          >
-            <option value="">-</option>
-            {notes.map((note) => (
-              <option key={note} value={note}>
-                {note}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="upperOctave">上段オクターブ: {upperOctave}</label>
-          <input
-            id="upperOctave"
-            type="range"
-            min={1}
-            max={8}
-            value={upperOctave}
-            step={1}
-            onChange={(e) => setUpperOctave(e.target.valueAsNumber)}
-          />
-        </div>
-        <div>
-          <label htmlFor="upperKeyShift">上段キーシフト: {upperKeyShift}</label>
-          <input
-            id="upperKeyShift"
-            type="range"
-            min={-11}
-            max={11}
-            value={upperKeyShift}
-            step={1}
-            onChange={(e) => setUpperKeyShift(e.target.valueAsNumber)}
-          />
-        </div>
-        <div>
-          <label htmlFor="lowerOctave">下段オクターブ: {lowerOctave}</label>
-          <input
-            id="lowerOctave"
-            type="range"
-            min={1}
-            max={8}
-            value={lowerOctave}
-            step={1}
-            onChange={(e) => setLowerOctave(e.target.valueAsNumber)}
-          />
-        </div>
-        <div>
-          <label htmlFor="lowerKeyShift">下段キーシフト: {lowerKeyShift}</label>
-          <input
-            id="lowerKeyShift"
-            type="range"
-            min={-11}
-            max={11}
-            value={lowerKeyShift}
-            step={1}
-            onChange={(e) => setLowerKeyShift(e.target.valueAsNumber)}
-          />
-        </div>
+
+        <button
+          className={styles.closeButton}
+          onClick={() => dialogRef.current?.close()}
+        >
+          閉じる
+        </button>
       </dialog>
-    </div>
+    </>
   );
 };
