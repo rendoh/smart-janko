@@ -1,16 +1,16 @@
-import * as Tone from 'tone';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useIsInScale, useKeyboardNote } from './dataflow';
 import * as styles from './Key.css';
 import { useMediaQuery } from './useMediaQuery';
-
-const synth = new Tone.PolySynth().toDestination();
+import { synths, useSynthType } from './synth';
 
 export type KeyProps = {
   keyboardKey: string;
 };
 
 export const Key: FC<KeyProps> = ({ keyboardKey }) => {
+  const [synthType] = useSynthType();
+  const synth = synths[synthType];
   const [isPressed, setIsPressed] = useState(false);
   const note = useKeyboardNote(keyboardKey);
   const pressed = useRef(false);
@@ -19,11 +19,11 @@ export const Key: FC<KeyProps> = ({ keyboardKey }) => {
   const down = useCallback(() => {
     setIsPressed(true);
     synth.triggerAttack(typeof note === 'string' ? note : note.notes);
-  }, [note]);
+  }, [note, synth]);
   const up = useCallback(() => {
     setIsPressed(false);
     synth.triggerRelease(typeof note === 'string' ? note : note.notes);
-  }, [note]);
+  }, [note, synth]);
 
   useEffect(() => {
     const handleKeydown = ({ key }: KeyboardEvent) => {
@@ -47,7 +47,7 @@ export const Key: FC<KeyProps> = ({ keyboardKey }) => {
       window.removeEventListener('keyup', handleKeyup);
       synth.triggerRelease(typeof note === 'string' ? note : note.notes);
     };
-  }, [down, keyboardKey, note, up]);
+  }, [down, keyboardKey, note, synth, up]);
 
   const isInScale = useIsInScale(
     typeof note === 'string' ? note : note.notes[0],

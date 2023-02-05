@@ -17,6 +17,7 @@ import { RangeSlider } from './RangeSlider';
 import { Select } from './Select';
 import * as styles from './Settings.css';
 import { Switch } from './Switch';
+import { SynthType, synthTypes, useSynthType } from './synth';
 
 export const Settings: FC = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -31,6 +32,7 @@ export const Settings: FC = () => {
     };
   }, []);
 
+  const [synthType, setSynthType] = useSynthType();
   const [key, setKey] = useKey();
   const [keyboardType, setKeyboardType] = useKeyboardType();
   const [upperOctave, setUpperOctave] = useUpperOctave();
@@ -87,6 +89,23 @@ export const Settings: FC = () => {
               {notes.map((note) => (
                 <option key={note} value={note}>
                   {note}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          <label className={styles.label} htmlFor="synthType">
+            音色
+          </label>
+          <div className={styles.field}>
+            <Select
+              id="synthType"
+              value={synthType}
+              onChange={(e) => setSynthType(e.target.value as SynthType)}
+            >
+              {synthTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
                 </option>
               ))}
             </Select>
